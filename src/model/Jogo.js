@@ -31,6 +31,12 @@ class Jogo {
         return this._fimDeJogo;
     }
 
+    verificarFimDeJogo() {
+        const { fimDeJogo, vencedor } = this._tabuleiro.isFimDeJogo();
+        this._fimDeJogo = fimDeJogo;
+        this._vencedor = vencedor;
+    }
+
     trocarVez() {
         this._vez = this._vez == "X" ? "O" : "X";
     }

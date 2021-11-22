@@ -44,12 +44,20 @@ io.on("connection", (socket) => {
     socket.on("make.move", function(data) {
         const jogo = jogos[socket.id];
         jogo.tabuleiro.setCampo(data.position, data.simbolo);
+        jogo.verificarFimDeJogo();
         jogo.trocarVez();
-
-        const event = "move.made"
+        const event = jogo.fimDeJogo ? "fimdejogo" : "move.made";
         clients[jogo.jogador1.socketId].emit(event, jogo);
         clients[jogo.jogador2.socketId].emit(event, jogo);
 
+    });
+
+    socket.on("jogo.reset", function(data) {
+        const jogo = jogos[socket.id];
+        if (!jogo) return;
+        jogo.tabuleiro.reset();
+        clients[jogo.jogador1.socketId].emit("jogo.comeco", jogo);
+        clients[jogo.jogador2.socketId].emit("jogo.comeco", jogo);
     });
 
     socket.on("disconnect", function() {
