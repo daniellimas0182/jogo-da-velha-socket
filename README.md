@@ -6,7 +6,7 @@ ____________________
 
 Tecnologias utilizadas:
 
- Servidor: NodeJS;
+ Servidor: NodeJS, JavaScript;
  
  Gráficos: HTML5; 
  
