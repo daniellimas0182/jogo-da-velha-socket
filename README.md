@@ -2,6 +2,8 @@
 
 Implementação online do jogo da velha para disciplina de redes.
 
+____________________
+
 Tecnologias utilizadas:
 
 Servidor: NodeJS
