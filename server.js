@@ -9,7 +9,7 @@ const app = express();
 
 const server = http.Server(app).listen(8080);
 const io = new Server(server);
-const clients = {};
+const clients = {}; // objto que recebe as requisições via sockete
 
 app.use(express.static("./public"));
 app.use("/vendor", express.static("./node_modules"));
@@ -25,39 +25,40 @@ app.get("/", (req, res) => {
 const jogos = {};
 let proximoJogo = null;
 
+//tratando a requisição do socket
 io.on("connection", (socket) => {
     let id = socket.id;
     console.log("Novo cliente conectado. ID => " + id);
-    clients[id] = socket;
+    clients[id] = socket; //salva a conecxão do socket no clients 
 
-    socket.on("jogo.comeco", function(data) {
+    socket.on("comecarJogo", function(data) {
         const jogo = join(socket, data);
-        if (jogo.jogador2) {
-            console.log("Novo jogo começando... ");
+        if (jogo.jogador2) { // se eu já tenho o segundo jogador
+            console.log("O jogo está começando... ");
 
-            clients[jogo.jogador1.socketId].emit("jogo.comeco", jogo);
-            clients[jogo.jogador2.socketId].emit("jogo.comeco", jogo);
+            clients[jogo.jogador1.socketId].emit("comecarJogo", jogo);
+            clients[jogo.jogador2.socketId].emit("comecarJogo", jogo);
 
         }
     });
 
-    socket.on("make.move", function(data) {
+    socket.on("jogada", function(data) {
         const jogo = jogos[socket.id];
         jogo.tabuleiro.setCampo(data.position, data.simbolo);
         jogo.verificarFimDeJogo();
         jogo.trocarVez();
-        const event = jogo.fimDeJogo ? "fimdejogo" : "move.made";
+        const event = jogo.fimDeJogo ? "fimdejogo" : "proximajogada";
         clients[jogo.jogador1.socketId].emit(event, jogo);
         clients[jogo.jogador2.socketId].emit(event, jogo);
 
     });
 
-    socket.on("jogo.reset", function(data) {
+    socket.on("resetJogo", function(data) {
         const jogo = jogos[socket.id];
-        if (!jogo) return;
+        if (!jogo) return; // para verificar se achou o jogo 
         jogo.tabuleiro.reset();
-        clients[jogo.jogador1.socketId].emit("jogo.comeco", jogo);
-        clients[jogo.jogador2.socketId].emit("jogo.comeco", jogo);
+        clients[jogo.jogador1.socketId].emit("comecarJogo", jogo);
+        clients[jogo.jogador2.socketId].emit("comecarJogo", jogo);
     });
 
     socket.on("disconnect", function() {
@@ -68,7 +69,7 @@ io.on("connection", (socket) => {
                 clients[jogo.jogador1.socketId];
 
             if (socketEmit) {
-                socketEmit.emit("opponent.left");
+                socketEmit.emit("oponenteSaiu");
             }
 
             delete jogos[socket.id];
@@ -78,10 +79,10 @@ io.on("connection", (socket) => {
     });
 });
 
-const join = (socket, data) => {
+const join = (socket, data) => { // faz o join ao entrar os dois jogadores para começar a partida
     const jogador = new Jogador(data.nome, 'X', socket.id);
 
-    if (proximoJogo) {
+    if (proximoJogo) { // se já existe um jogador esperando 
         proximoJogo.jogador2 = jogador;
         jogos[proximoJogo.jogador1.socketId] = proximoJogo;
         jogos[proximoJogo.jogador2.socketId] = proximoJogo;

@@ -45,7 +45,7 @@ p {
     display: grid;
     grid-template-columns: auto auto auto;
     gap: 6px;
-    background-image: url('/imagem/bg_jogo_da_velha.png');
+    background-image: url('/imagem/jogo_velha.png');
 }
 
 .tabuleiro button {
@@ -59,21 +59,21 @@ p {
 }
 
 .tabuleiro button.campoX {
-    color: red
+    color: purple
 }
 
 .tabuleiro button.campoO {
-    color: blue
+    color: red
 }
 
-.register {
+.registro {
     text-align: center;
     margin: 20px auto;
     display: flex;
     flex-direction: column;
 }
 
-.register input {
+.registro input {
     width: 300px;
     padding: 5px;
     border-radius: 5px;
@@ -86,7 +86,7 @@ button.btn {
     padding: 5px;
     border-radius: 5px;
     border: none;
-    background-color: rgb(126, 7, 106);
+    background-color: rgb(38, 161, 1);
     color: white;
     text-transform: uppercase;
     margin-top: 10px;

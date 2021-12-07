@@ -1,4 +1,5 @@
 const app = new Vue({
+
     el: "#app",
     data: {
         socket: null,
@@ -9,62 +10,62 @@ const app = new Vue({
         mensagem: "",
         bloqueio: false
     },
-    methods: {
-        startGame() {
+    methods: { // 
+        comecarJogo() {
             this.mensagem = "Esperando jogador... ";
             this.bloqueio = true;
-            this.socket.emit("jogo.comeco", {
+            this.socket.emit("comecarJogo", {
                 nome: this.nome,
             });
         },
-        renderTurnMessage() {
+        renderizaMensagemDoTurno() {
             this.mensagem = this.minhaVez ? "Sua vez de jogar" : "Aguarde a vez do adversário";
         },
 
-        makeMove(campo) {
+        jogada(campo) {
             if (!this.minhaVez || campo.simbolo !== null) return;
-            this.socket.emit("make.move", {
+            this.socket.emit("jogada", {
                 simbolo: this.simbolo,
                 position: this.jogo._tabuleiro._campos.indexOf(campo),
             });
         },
 
-        resetGame() {
-            this.socket.emit("jogo.reset");
+        resetaJogo() {
+            this.socket.emit("resetJogo");
         },
     },
-    mounted() {
+    mounted() { // metodo chamado quando é renderizado o html 
         this.socket = io.connect(window.location.origin);
 
-        const self = this;
+        const self = this; // pega o contexto 
 
-        this.socket.on("jogo.comeco", function(data) {
+        this.socket.on("comecarJogo", function(data) {
             self.jogo = data;
             const meuJogador = (data._jogador1._socketId == self.socket.id ? data._jogador1 :
                 data._jogador2);
 
             self.simbolo = meuJogador._simbolo;
             self.minhaVez = data._vez == self.simbolo;
-            self.renderTurnMessage();
+            self.renderizaMensagemDoTurno();
         });
 
-        this.socket.on("move.made", (data) => {
+        this.socket.on("proximajogada", (data) => {
             self.jogo = data;
             self.minhaVez = data._vez == self.simbolo;
-            self.renderTurnMessage();
+            self.renderizaMensagemDoTurno();
         });
 
         this.socket.on("fimdejogo", function(data) {
             self.jogo = data;
-            self.minhaVez = false;
-            if (self.jogo._vencedor) {
+            self.minhaVez = false; //  não tem mais vez
+            if (self.jogo._vencedor) { // se tiver ganhaor
                 self.mensagem = self.jogo._vencedor == self.simbolo ? "Você venceu!" : "Você perdeu!";
             } else {
                 self.mensagem = "Jogo empatado!";
             }
         });
 
-        this.socket.on("opponent.left", function() {
+        this.socket.on("oponenteSaiu", function() {
             self.jogo = null;
             self.bloqueio = false;
             self.mensagem = "Seu oponente saiu do jogo!";

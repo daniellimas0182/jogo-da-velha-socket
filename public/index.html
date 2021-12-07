@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Velha</title>
-    <meta name="description" content="Convide os amigos para jogar Jogo da velha">
-    <meta name="keywords" content="Jogo da Velha, jogue grátis, jogue com os amigos, jogo online, tic tac toe">
     <meta name="robots" content="">
     <meta name="revisit-after" content="1 month">
     <meta name="language" content="Portuguese">
@@ -28,20 +26,17 @@
 
             <div class="jogo" v-if="jogo">
                 <div class="tabuleiro">
-                    <button v-for="campo in jogo._tabuleiro._campos" @click="makeMove(campo)" :class="{'campoX': campo.simbolo == 'X', 'campoO': campo.simbolo == 'O'}">   
+                    <button v-for="campo in jogo._tabuleiro._campos" @click="jogada(campo)" :class="{'campoX': campo.simbolo == 'X', 'campoO': campo.simbolo == 'O'}">   
                         {{campo.simbolo}} 
                     </button>
                 </div>
-                <button @click="resetGame()" class="btn" v-if="jogo._fimDeJogo">Jogar Novamente</button>
+                <button @click="resetaJogo()" class="btn" v-if="jogo._fimDeJogo">Jogar Novamente</button>
             </div>
 
-
-
-            <div class="register" v-if="!jogo && !bloqueio">
+            <div class="registro" v-if="!jogo && !bloqueio">
                 <input type="text" v-model="nome" placeholder="Entre com o seu nome...">
-                <button @click="startGame()" class="btn">Jogar</button>
+                <button @click="comecarJogo()" class="btn">Jogar</button>
             </div>
-
         </div>
     </main>
 

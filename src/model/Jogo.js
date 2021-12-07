@@ -7,7 +7,7 @@ class Jogo {
         this._tabuleiro = new Tabuleiro();
         this._fimDeJogo = null;
         this._vencedor = null;
-        this._vez = "X";
+        this._vez = "X"; // jogador 1 sempre terá o simbolo x
     }
 
     get jogador1() {

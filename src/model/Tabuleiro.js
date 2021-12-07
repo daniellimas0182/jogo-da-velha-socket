@@ -1,6 +1,6 @@
 class Tabuleiro {
     constructor() {
-        this._campos = [
+        this._campos = [ // campo e a possição dos simbolos
             { simbolo: null },
             { simbolo: null },
             { simbolo: null },
@@ -28,10 +28,10 @@ class Tabuleiro {
     }
 
     isFimDeJogo() {
-        const matches = ["XXX", "OOO"];
-        const firstNull = this._campos.findIndex((campo) => campo.simbolo == null);
-        if (firstNull == -1) {
-            return { fimDeJogo: true, vencedor: null };
+        const simboloVencedor = ["XXX", "OOO"]; //combinações vitoria
+        const tabuleiroVazio = this._campos.findIndex((campo) => campo.simbolo == null); // verifica se o campo está nulo, sem simbolo
+        if (tabuleiroVazio == -1) { // verifica se todos os campos já foram marcados
+            return { fimDeJogo: true, vencedor: null }; // jogo a cabou e não teve nem um vencedor
         }
 
         const condicoesVitoria = [
@@ -51,17 +51,17 @@ class Tabuleiro {
         ]
 
         const condicaoVitoria = condicoesVitoria.find((condicao) => {
-            return condicao == matches[0] || condicao == matches[1];
+            return condicao == simboloVencedor[0] || condicao == simboloVencedor[1]; // simboloVencedor 0 é o X e simboloVencedor 1 é o O
         });
 
         if (condicaoVitoria) {
-            return { fimDeJogo: true, vencedor: condicaoVitoria == matches[0] ? 'X' : 'O' };
+            return { fimDeJogo: true, vencedor: condicaoVitoria == simboloVencedor[0] ? 'X' : 'O' }; // se tiver condicaoVitoria 
         }
 
-        return { fimDeJogo: false, vencedor: null };
+        return { fimDeJogo: false, vencedor: null }; // jogo não cabou e continua a partida
     }
 
-    reset() {
+    reset() { // reseta o tabuleiro setando todos os campos com null
         this._campos.forEach((campo) => (campo.simbolo = null));
     }
 }
