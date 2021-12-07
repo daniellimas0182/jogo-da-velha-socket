@@ -31,4 +31,4 @@ Executar o Projeto:
 
  Na raiz do projeto executar o comando npm start;
  
- Abra no navegador o endereço do seu IP na porta 9001;
+ Abra no navegador o endereço do seu IP na porta 8080;
